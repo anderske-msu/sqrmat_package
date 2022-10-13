@@ -13,8 +13,8 @@ class square_matrix:
     # TODO Add tracking
     
     def __init__(self, dim, order):
-        self.__dim = dim
-        self.__order = order
+        self.dim = dim
+        self.order = order
         
         self._hp = tpsvar(dim, order=order)
         self.variables = self._hp.get_variables()
@@ -44,10 +44,10 @@ class square_matrix:
 
         # First get the degenerate list
         if target is None:
-            target = [i for i in range(1, self.__dim+1)]
+            target = [i for i in range(1, self.dim+1)]
         
         if dim is None:
-            dim_iter = self.__dim
+            dim_iter = self.dim
         else:
             dim_iter = dim
 
