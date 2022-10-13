@@ -17,7 +17,8 @@ class square_matrix:
         self.order = order
         
         self._hp = tpsvar(dim, order=order)
-        self.variables = self._hp.get_variables()
+        # self.variables = self._hp.get_variables()
+        self.variables = self._hp.vars
         
         self.degenerate_list = [None for i in range(dim)]
         self.left_vector = [None for i in range(dim)]
