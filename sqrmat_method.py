@@ -47,6 +47,7 @@ class square_matrix:
         if target is None:
             target = [i for i in range(1, self.dim+1)]
         
+        # TODO Does this do what I want it to do?
         if dim is None:
             dim_iter = self.dim
         else:
@@ -77,18 +78,44 @@ class square_matrix:
 
 
     def w(self, z):
+        """Transforms normalized complex coordinates into the transformed phase space.
+        
+        Inputs:
+            z: Array-like; [zx, zx*, zy, zy*]
+
+        Returns:
+            w; Numpy Array; [wx, wx*, wy, wy*]
+        """
+        
         if self.__fztow[0] is None:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
 
         return np.array([self.__fztow[0](z), self.__fztow[1](z), self.__fztow[2](z), self.__fztow[3](z)])
 
     def z(self, w):
+        """Tranformes transformed coordinates into the normalized complex coordinate phase space.
+        
+        Inputs:
+            w: Array-like; [wx, wx*, wy, wy*]
+
+        Returns:
+            z; Numpy Array; [zx, zx*, zy, zy*]
+        """
+
         if self.__wftoz[0] is None:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
 
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
 
     def map(self, z):
+        """Runs z through the given one turn map. z' = f(z)
+        
+        Inputs:
+            z; Array-like; [zx, zx*, zy, zy*]
+
+        Returns:
+            z'; Numpy Array; [zx', zx'*, zy', zy'*]
+        """
         if self.__fzmap[0] is None:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
 
