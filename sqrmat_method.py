@@ -149,12 +149,12 @@ class square_matrix:
 
                     if term > max_error:
                         max_error = term*1
+
         if results:
             print("Number of Errors:", num_errors)
             print("Max Error:", max_error)
 
         if num_errors == 0:
             pass_ = True
-
-    
+  
         return pass_
