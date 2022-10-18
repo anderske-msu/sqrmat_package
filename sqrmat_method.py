@@ -143,11 +143,11 @@ class square_matrix:
             for j in range(dimy):
                 term = np.abs(self.square_matrix[i,j])
 
-                if i > j and not np.isclose(term, 0, atol=atol):
-                    # print("Error:", i, j, term)
-                    num_errors += 1
+                if i > j:                                       # On the lower diagonal
+                    if not np.isclose(term, 0, atol=atol):      # If the element is not close to zero count it
+                        num_errors += 1
 
-                    if term > max_error:
+                    if term > max_error:                        # Track the largest element
                         max_error = term*1
 
         if results:
