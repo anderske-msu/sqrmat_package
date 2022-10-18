@@ -120,3 +120,41 @@ class square_matrix:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
 
         return np.array([self.__fzmap[0](z), self.__fzmap[1](z), self.__fzmap[2](z), self.__fzmap[3](z)])
+
+    def test_sqrmat(self, atol=1e-8, results=False):
+        """Checks that the lower triagular elements of the square matrix are close to zero.
+        
+        Inputs:
+            atol: The absolute tolerance to check against.
+            results: Print results
+
+        Returns:
+            pass: If all the points are close to zero the funtion will return True
+        """
+
+        dimx, dimy = self.square_matrix.shape
+
+        pass_ = False
+
+        num_errors = 0
+        max_error = 0
+
+        for i in range(dimx):
+            for j in range(dimy):
+                term = np.abs(self.square_matrix[i,j])
+
+                if i > j and not np.isclose(term, 0, atol=atol):
+                    # print("Error:", i, j, term)
+                    num_errors += 1
+
+                    if term > max_error:
+                        max_error = term*1
+        if results:
+            print("Number of Errors:", num_errors)
+            print("Max Error:", max_error)
+
+        if num_errors == 0:
+            pass_ = True
+
+    
+        return pass_
