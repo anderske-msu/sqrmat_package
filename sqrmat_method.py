@@ -75,6 +75,8 @@ class square_matrix:
         self.__fztow = [numpify(f) for f in w0list]
         self.__wftoz = [numpify(f) for f in invw0z]
 
+        # Build Jacobian function
+        self.__fjacobian = [numpify(wtemp.derivative(i+1)) for wtemp in w0list for i in range(2*self.dim)]
 
 
     def w(self, z):
@@ -106,6 +108,23 @@ class square_matrix:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
 
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
+
+    def jacobian(self, z):
+        """Returns the value of the jacobian matrix at z.
+        
+        Inputs:
+            z: Array-like; [zx, zx*, zy, zy*]
+            
+        Returns:
+            jac: Numpy Array; Jacobian
+        """
+        jac=[]
+        
+        for f in self.__fjacobian:
+           jac.append(f(z))
+        
+        return np.array(jac)
+
 
     def map(self, z):
         """Runs z through the given one turn map. z' = f(z)
