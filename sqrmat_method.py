@@ -140,7 +140,7 @@ class square_matrix:
 
         return np.array([self.__fzmap[0](z), self.__fzmap[1](z), self.__fzmap[2](z), self.__fzmap[3](z)])
 
-    def test_sqrmat(self, atol=1e-8, results=False):
+    def test_sqrmat(self, atol: float = 1e-8, results: bool = False) -> tuple:
         """Checks that the lower triagular elements of the square matrix are close to zero.
         
         Inputs:
@@ -176,4 +176,4 @@ class square_matrix:
         if num_errors == 0:
             pass_ = True
   
-        return pass_
+        return pass_, num_errors, max_error
