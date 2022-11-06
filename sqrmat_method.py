@@ -47,7 +47,8 @@ class square_matrix:
         if target is None:
             target = [i for i in range(1, self.dim+1)]
         
-        # TODO Does this do what I want it to do?
+        # ? Does this do what I want it to do?
+        # TODO Remove this
         if dim is None:
             dim_iter = self.dim
         else:
