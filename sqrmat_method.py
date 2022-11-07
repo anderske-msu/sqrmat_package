@@ -10,27 +10,24 @@ from commonfuncs import numpify
 
 class square_matrix:
 
-    # TODO Add tracking
-    
     def __init__(self, dim, order):
         self.dim = dim
         self.order = order
         
         self._hp = tpsvar(dim, order=order)
-        # self.variables = self._hp.get_variables()
         self.variables = self._hp.vars
         
-        self.degenerate_list = [None for i in range(dim)]
-        self.left_vector = [None for i in range(dim)]
+        self.degenerate_list = [None for _ in range(dim)]
+        self.left_vector = [None for _ in range(dim)]
 
-        self.jordan_norm_form_matrix = [None for i in range(dim)]
-        self.jordan_chain_structure = [None for i in range(dim)]
+        self.jordan_norm_form_matrix = [None for _ in range(dim)]
+        self.jordan_chain_structure = [None for _ in range(dim)]
         
         self.square_matrix = None
 
-        self.__fztow = [None for i in range(dim)]
-        self.__wftoz = [None for i in range(dim)]
-        self.__fzmap = [None for i in range(dim)]
+        self.__fztow = [None for _ in range(dim)]
+        self.__wftoz = [None for _ in range(dim)]
+        self.__fzmap = [None for _ in range(dim)]
 
     def construct_square_matrix(self, periodic_map):
         self.__fzmap = [numpify(f) for f in periodic_map]
