@@ -11,8 +11,8 @@ from commonfuncs import numpify
 class square_matrix:
 
     def __init__(self, dim, order):
-        self.dim = dim
-        self.order = order
+        self.dim = dim                                              # Number of spacial dimentions
+        self.order = order                                          # Square Matrix order
         
         self._hp = tpsvar(dim, order=order)
         self.variables = self._hp.vars
@@ -34,24 +34,29 @@ class square_matrix:
         self._hp.construct_sqr_matrix(periodic_map=periodic_map)
         self.square_matrix = self._hp.sqr_mat
 
-    def get_transformation(self, target=None, res=None, chain=0, dim=None, epsilon=1e-15):
+    def get_transformation(self, res=None, chain=0, epsilon=1e-15):
+        """
+        Creates the transformation for the approximate action.
+
+        Inputs:
+            res:
+                The resonance the linear tunes are on. Default is None
+            
+            chain: int
+                The jordan chain to be used. Default is the longest chain (0).
+
+            epsilon: float
+                Epsilon for the finding the jordan chain structure. Default is 1e-15.
+
+        Outputs:
+            None
+        """
 
         # Check if contruct sqrmat was run
         if self.square_matrix is None:
             raise Exception("The square matrix has not been constructed. Run \"construct_square_matrix\" first.")
 
-        # First get the degenerate list
-        if target is None:
-            target = [i for i in range(1, self.dim+1)]
-        
-        # ? Does this do what I want it to do?
-        # TODO Remove this
-        if dim is None:
-            dim_iter = self.dim
-        else:
-            dim_iter = dim
-
-        for di in range(dim_iter):
+        for di in range(self.dim):
             self.degenerate_list[di] = self._hp.get_degenerate_list(di+1, resonance=res)
             self._hp.sqrmat_reduction()
             self._hp.jordan_form()
@@ -67,6 +72,8 @@ class square_matrix:
         wy0cz = wy0z.conjugate(mode='CP')
 
         w0list = [wx0z, wx0cz, wy0z, wy0cz]
+
+        self.w0list = w0list        # ! Temp variable for debug
 
         invw0z = PyTPSA.inverse_map(w0list)
 
