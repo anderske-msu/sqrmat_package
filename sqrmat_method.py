@@ -57,12 +57,13 @@ class square_matrix:
             raise Exception("The square matrix has not been constructed. Run \"construct_square_matrix\" first.")
 
         for di in range(self.dim):
-            self.degenerate_list[di] = self._hp.get_degenerate_list(di+1, resonance=res)
+            self._hp.get_degenerate_list(di+1, resonance=res)
             self._hp.sqrmat_reduction()
             self._hp.jordan_form()
 
-            self.jordan_norm_form_matrix[di] = self._hp.jnf_mat
-            self.left_vector[di] = self._hp.left_vector[chain]
+            self.degenerate_list[di] = np.array(self._hp.degenerate_list.tolist())  # TODO Test without tolist + array
+            self.jordan_norm_form_matrix[di] = np.array(self._hp.jnf_mat.tolist())
+            self.left_vector[di] = self._hp.left_vector[chain].tolist()     # ? Does tolist help?
             self.jordan_chain_structure[di] = jordan_chain_structure(self.jordan_norm_form_matrix[di], epsilon=epsilon)
 
         wx0z = PyTPSA.tpsa(input_map=self.left_vector[0], dtype=complex)
