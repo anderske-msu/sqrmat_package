@@ -10,7 +10,7 @@ from commonfuncs import numpify
 
 class square_matrix:
 
-    def __init__(self, dim, order):
+    def __init__(self, dim: int, order: int):
         self.dim = dim                                              # Number of spacial dimentions
         self.order = order                                          # Square Matrix order
         
@@ -29,12 +29,12 @@ class square_matrix:
         self.__wftoz = [None for _ in range(dim)]
         self.__fzmap = [None for _ in range(dim)]
 
-    def construct_square_matrix(self, periodic_map):
+    def construct_square_matrix(self, periodic_map: list):
         self.__fzmap = [numpify(f) for f in periodic_map]
         self._hp.construct_sqr_matrix(periodic_map=periodic_map)
         self.square_matrix = self._hp.sqr_mat
 
-    def get_transformation(self, res=None, chain=0, epsilon=1e-15):
+    def get_transformation(self, res=None, chain: int = 0, epsilon: float = 1e-15):
         """
         Creates the transformation for the approximate action.
 
@@ -61,9 +61,10 @@ class square_matrix:
             self._hp.sqrmat_reduction()
             self._hp.jordan_form()
 
-            self.degenerate_list[di] = np.array(self._hp.degenerate_list.tolist())  # TODO Test without tolist + array
+            # ? Are these Better as lists or np.ndarrays?
+            self.degenerate_list[di] = np.array(self._hp.degenerate_list.tolist())
             self.jordan_norm_form_matrix[di] = np.array(self._hp.jnf_mat.tolist())
-            self.left_vector[di] = self._hp.left_vector[chain].tolist()     # ? Does tolist help?
+            self.left_vector[di] = self._hp.left_vector[chain].tolist() 
             self.jordan_chain_structure[di] = jordan_chain_structure(self.jordan_norm_form_matrix[di], epsilon=epsilon)
 
         wx0z = PyTPSA.tpsa(input_map=self.left_vector[0], dtype=complex)
@@ -74,8 +75,6 @@ class square_matrix:
 
         w0list = [wx0z, wx0cz, wy0z, wy0cz]
 
-        self.w0list = w0list        # ! Temp variable for debug
-
         invw0z = PyTPSA.inverse_map(w0list)
 
         self.__fztow = [numpify(f) for f in w0list]
@@ -85,7 +84,7 @@ class square_matrix:
         self.__fjacobian = [numpify(wtemp.derivative(i+1)) for wtemp in w0list for i in range(2*self.dim)]
 
 
-    def w(self, z):
+    def w(self, z: np.ndarray) -> np.ndarray:
         """Transforms normalized complex coordinates into the transformed phase space.
         
         Inputs:
@@ -100,7 +99,7 @@ class square_matrix:
 
         return np.array([self.__fztow[0](z), self.__fztow[1](z), self.__fztow[2](z), self.__fztow[3](z)])
 
-    def z(self, w):
+    def z(self, w: np.ndarray) -> np.ndarray:
         """Tranformes transformed coordinates into the normalized complex coordinate phase space.
         
         Inputs:
@@ -115,7 +114,7 @@ class square_matrix:
 
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
 
-    def jacobian(self, z):
+    def jacobian(self, z: np.ndarray) -> np.ndarray:
         """Returns the value of the jacobian matrix at z.
         
         Inputs:
@@ -132,7 +131,7 @@ class square_matrix:
         return np.array(jac)
 
 
-    def map(self, z):
+    def map(self, z: np.ndarray) -> np.ndarray:
         """Runs z through the given one turn map. z' = f(z)
         
         Inputs:
