@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sp      # For test_u
 
 # TODO install package into enviroment
 import PyTPSA   # * Must be in the same folder as PyTPSA or in the path
@@ -182,3 +183,24 @@ class square_matrix:
             pass_ = True
   
         return pass_, num_errors, max_error
+
+    def test_u(self):
+        """Tests U U^(-1) = I"""
+        
+        if self.__fzmap[0] is None:
+            raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
+        
+        zx, zy = sp.symbols(r'z_x, z_y')
+        zxc = zx.conjugate()
+        zyc = zy.conjugate()
+        
+        z = (zx, zxc, zy, zyc)
+        
+        w = self.w([*z]).tolist()
+        
+        ztest = self.z(w).tolist()
+
+        for i in range(self.dim):
+            ztest[i] = sp.Poly(ztest[i], z).as_dict()
+
+        return ztest
