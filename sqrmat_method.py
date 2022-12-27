@@ -1,5 +1,8 @@
 import numpy as np
-import sympy as sp      # For test_u
+from numpy.typing import ArrayLike  # For hinting
+
+import sympy as sp                  # For test_u
+import time                         # For timing functions
 
 # TODO install package into enviroment
 import PyTPSA   # * Must be in the same folder as PyTPSA or in the path
@@ -25,7 +28,7 @@ class square_matrix:
         self.jordan_norm_form_matrix = [None for _ in range(dim)]
         self.jordan_chain_structure = [None for _ in range(dim)]
 
-        self.__weights = [[1,0,0,0],[0,0,1,0]]
+        self.__weights = np.array([[1,0,0,0],[0,0,1,0]], dtype=np.complex128)
         
         self.square_matrix = None
 
@@ -77,6 +80,7 @@ class square_matrix:
         # TODO Rewrite to make sure it'll work with dim != 2
 
         # First left eigenvector
+        # ? Should I use complex or np.complex128?
         wx0z = PyTPSA.tpsa(input_map=self.left_vector[0], dtype=complex)
         wx0cz = wx0z.conjugate(mode='CP')
 
@@ -95,40 +99,44 @@ class square_matrix:
 
         invw0z = PyTPSA.inverse_map(self.__w0list)
 
-        self.__fztow = [numpify(f) for f in self.__w0list]
+        self.__fztow0 = [numpify(f) for f in self.__w0list]
+        self.__fztow1 = [numpify(f) for f in self.__w1list]
+        
+        self.__fztow = 1*self.__fztow0
         self.__wftoz = [numpify(f) for f in invw0z]
 
         # Build Jacobian function
         # ! Used for netwons inverse, needs to be update for using weights
         self.__fjacobian = [numpify(wtemp.derivative(i+1)) for wtemp in self.__w0list for i in range(2*self.dim)]
 
-
-    def w(self, z: list, weights: list = None) -> np.ndarray:
+    def w(self, z: ArrayLike, weights: np.ndarray = None) -> np.ndarray:
         """Transforms normalized complex coordinates into the transformed phase space.
         
         Inputs:
-            z: Array-like
+            z: array_like
                 [zx, zx*, zy, zy*]
 
-            weights: list
+            weights: numpy.ndarray
                 The weights for each left vector transformation to be used in the full w transformation. Dimentions are (dim, 4).
                 The default is wj = wj0 where j is each of the spatial dimentions.
                     i.e. wj(z) = weights[j,0] * wx0(x) + weights[j,1] * wx1(x) + weights[j,2] * wy0(x) + weights[j,3] * wy1(x)
 
         Returns:
-            w: Numpy Array
+            w: numpy.ndarray
                 [wx, wx*, wy, wy*] 
         """
         
         if self.__fztow[0] is None:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
         
-        if (weights is not None) and (self.__weights != weights):
+        if (weights is not None) and np.any(self.__weights != weights):
+            
+            start = time.perf_counter()
             
             print("Transformation weights are being updated.")
             
             # Checks if the weights have changed
-            self.__weights = np.array(weights).tolist()     # TODO figure out a better way to make sure it's not passed by reference
+            self.__weights = np.array(weights)     # TODO figure out a better way to make sure it's not passed by reference
 
             # Finding new transformation and inverse functions
 
@@ -136,12 +144,12 @@ class square_matrix:
 
             for di in range(self.dim):
                 wz.append(self.__weights[di,0]*self.__w0list[0] + self.__weights[di,1]*self.__w1list[0] 
-                + self.__weights[di,2]*self.__w0list[2] + self.__weights[di,3]*self.__w1list[2])
+                        + self.__weights[di,2]*self.__w0list[2] + self.__weights[di,3]*self.__w1list[2])
             
             wcz = [wi.conjugate(mode='CP') for wi in wz]        # Conjugate terms
             
             wlist = []                                          # New w list
-
+            
             for wi, wci in zip(wz, wcz):
                 # Adds new W PyTPSA terms alternating between w and w*
                 wlist.append(wi)
@@ -153,19 +161,23 @@ class square_matrix:
             self.__fztow = [numpify(f) for f in wlist]
             self.__wftoz = [numpify(f) for f in invz]
     
+            end = time.perf_counter()
+
+            print(f'Weights Updated: Time {end-start}s')
+
 
         return np.array([self.__fztow[0](z), self.__fztow[1](z), self.__fztow[2](z), self.__fztow[3](z)])
 
-    def z(self, w: list) -> np.ndarray:
+    def z(self, w: ArrayLike) -> np.ndarray:
         """Tranformes transformed coordinates into the normalized complex coordinate phase space.
         Assumes the weights are the same ones used in the last call of self.w
         
         Inputs:
-            w: Array-like
+            w: array_like
                 [wx, wx*, wy, wy*]
 
         Returns:
-            z: Numpy Array
+            z: numpy.ndarray
                 [zx, zx*, zy, zy*]
         """
 
@@ -174,14 +186,90 @@ class square_matrix:
 
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
 
-    def jacobian(self, z: np.ndarray) -> np.ndarray:
+    def get_weights(self, z: ArrayLike, nalpha: int, nbeta: int) -> np.ndarray:
+        # ! Unfinished, needs testing
+        start = time.perf_counter()
+        
+        num_eig = 4     # Number of left eigenvectors being used in the linear combination of the transformation
+
+        wx0 = self.__fztow0[0](z)
+        wx1 = self.__fztow1[0](z)
+        wy0 = self.__fztow0[2](z)
+        wy1 = self.__fztow1[2](z)
+
+        wx0 = np.reshape(wx0, (nalpha, nbeta))
+        wx1 = np.reshape(wx1, (nalpha, nbeta))
+        wy0 = np.reshape(wy0, (nalpha, nbeta))
+        wy1 = np.reshape(wy1, (nalpha, nbeta))
+
+        wx0 = np.fft.fft2(wx0)
+        wx1 = np.fft.fft2(wx1)
+        wy0 = np.fft.fft2(wy0)
+        wy1 = np.fft.fft2(wy1)
+
+        wf = np.array([wx0, wx1, wy0, wy1])
+
+        # TODO Avoid using python loops
+
+        def F1jh(wj, wh):
+            for n in range(nalpha):
+                for m in range(nbeta):
+                    if np.abs(n-1) + np.abs(m) != 0:
+                        term = np.conj(wj[n,m])*np.conj(wh[n,m])
+            return term
+
+        def F2jh(wj, wh):
+            for n in range(nalpha):
+                for m in range(nbeta):
+                    if np.abs(n) + np.abs(m-1) != 0:
+                        term = np.conj(wj[n,m])*np.conj(wh[n,m])
+            return term
+
+        F1 = np.zeros((num_eig, num_eig), dtype=np.complex128)
+        F2 = np.zeros_like(F1)
+
+        for j in range(num_eig):
+            for h in range(num_eig):
+                F1[j,h] = F1jh(wf[j,:,:], wf[h,:,:])
+                F2[j,h] = F2jh(wf[j,:,:], wf[h,:,:])
+
+        F1inv = np.linalg.inv(F1)
+        F2inv = np.linalg.inv(F2)
+
+        a1 = []
+        a2 = []
+        for h in range(num_eig):
+            a1num = np.sum(F1inv[h,:]*np.conj(wf[:,1,0]))
+            a2num = np.sum(F2inv[h,:]*np.conj(wf[:,0,1]))
+            
+            a1den = 0
+            a2den = 0
+            for m in range(num_eig):
+                for j in range(num_eig):
+                    a1den += wf[m,1,0]*F1inv[m,j]*np.conj(wf[j,1,0])
+                    a2den += wf[m,0,1]*F2inv[m,j]*np.conj(wf[j,0,1])
+
+            a1.append(a1num/a1den)
+            a2.append(a2num/a2den)
+
+            print("Here:", a1[-1], a2[-1])
+
+        end = time.perf_counter()
+
+        print(f"Weights Found!: Time {end-start}s")
+
+        a = np.array([a1, a2])
+
+        return a
+        
+    def jacobian(self, z: ArrayLike) -> np.ndarray:
         """Returns the value of the jacobian matrix at z.
         
         Inputs:
-            z: Array-like; [zx, zx*, zy, zy*]
+            z: array_like; [zx, zx*, zy, zy*]
             
         Returns:
-            jac: Numpy Array; Jacobian
+            jac: numpy.ndarray; Jacobian
         """
         jac=[]
         
@@ -190,15 +278,14 @@ class square_matrix:
         
         return np.array(jac)
 
-
-    def map(self, z: np.ndarray) -> np.ndarray:
+    def map(self, z: ArrayLike) -> np.ndarray:
         """Runs z through the given one turn map. z' = f(z)
         
         Inputs:
-            z; Array-like; [zx, zx*, zy, zy*]
+            z; array_like; [zx, zx*, zy, zy*]
 
         Returns:
-            z'; Numpy Array; [zx', zx'*, zy', zy'*]
+            z'; numpy.ndarray; [zx', zx'*, zy', zy'*]
         """
         if self.__fzmap[0] is None:
             raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
