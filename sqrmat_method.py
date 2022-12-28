@@ -208,30 +208,27 @@ class square_matrix:
         wy1 = np.fft.fft2(wy1)
 
         wf = np.array([wx0, wx1, wy0, wy1])
-
-        # TODO Avoid using python loops
-
-        def F1jh(wj, wh):
-            for n in range(nalpha):
-                for m in range(nbeta):
-                    if np.abs(n-1) + np.abs(m) != 0:
-                        term = np.conj(wj[n,m])*np.conj(wh[n,m])
-            return term
-
-        def F2jh(wj, wh):
-            for n in range(nalpha):
-                for m in range(nbeta):
-                    if np.abs(n) + np.abs(m-1) != 0:
-                        term = np.conj(wj[n,m])*np.conj(wh[n,m])
-            return term
-
+        
         F1 = np.zeros((num_eig, num_eig), dtype=np.complex128)
         F2 = np.zeros_like(F1)
 
         for j in range(num_eig):
             for h in range(num_eig):
-                F1[j,h] = F1jh(wf[j,:,:], wf[h,:,:])
-                F2[j,h] = F2jh(wf[j,:,:], wf[h,:,:])
+                term1 = 0
+                term2 = 0
+                for n in range(nalpha):
+                    for m in range(nbeta):
+                        
+                        term = np.conj(wf[j,n,m])*wf[h,n,m]
+                        
+                        if np.abs(n-1) + np.abs(m) != 0:
+                            term1 += term 
+                        
+                        if np.abs(n) + np.abs(m-1) != 0:
+                            term2 += term
+                        
+                F1[j,h] = term1*1 # ? Is *1 needed?
+                F2[j,h] = term2*1
 
         F1inv = np.linalg.inv(F1)
         F2inv = np.linalg.inv(F2)
