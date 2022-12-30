@@ -4,11 +4,7 @@ from numpy.typing import ArrayLike  # For hinting
 import sympy as sp                  # For test_u
 import time                         # For timing functions
 
-# TODO install package into enviroment
-import PyTPSA   # * Must be in the same folder as PyTPSA or in the path
-
-# TODO install these as packages
-# ! Import sys and run ' sys.path.insert(1, '../Square-Matrix/Custom_Libraries/') ' and ' sys.path.insert(1, '../Library/CodeLib/') '
+import PyTPSA
 from sqrmat import jordan_chain_structure, tpsvar
 from commonfuncs import numpify
 
