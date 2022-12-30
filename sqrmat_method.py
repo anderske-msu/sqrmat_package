@@ -187,9 +187,9 @@ class square_matrix:
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
 
     def get_weights(self, z: ArrayLike, nalpha: int, nbeta: int) -> np.ndarray:
-        # ! Unfinished, needs testing
+        # ! Not working
         start = time.perf_counter()
-        
+
         num_eig = 4     # Number of left eigenvectors being used in the linear combination of the transformation
 
         wx0 = self.__fztow0[0](z)
@@ -208,27 +208,28 @@ class square_matrix:
         wy1 = np.fft.fft2(wy1)
 
         wf = np.array([wx0, wx1, wy0, wy1])
-        
+
+        # Build F1/2 Matricies        
         F1 = np.zeros((num_eig, num_eig), dtype=np.complex128)
         F2 = np.zeros_like(F1)
 
         for j in range(num_eig):
             for h in range(num_eig):
-                term1 = 0
-                term2 = 0
+                sum1 = 0
+                sum2 = 0
                 for n in range(nalpha):
                     for m in range(nbeta):
                         
                         term = np.conj(wf[j,n,m])*wf[h,n,m]
                         
                         if np.abs(n-1) + np.abs(m) != 0:
-                            term1 += term 
+                            sum1 += term 
                         
                         if np.abs(n) + np.abs(m-1) != 0:
-                            term2 += term
+                            sum2 += term
                         
-                F1[j,h] = term1*1 # ? Is *1 needed?
-                F2[j,h] = term2*1
+                F1[j,h] = sum1*1 # ? Is *1 needed?
+                F2[j,h] = sum2*1
 
         F1inv = np.linalg.inv(F1)
         F2inv = np.linalg.inv(F2)
@@ -249,7 +250,7 @@ class square_matrix:
             a1.append(a1num/a1den)
             a2.append(a2num/a2den)
 
-            print("Here:", a1[-1], a2[-1])
+        print(f"Here! A1: {a1}; A2: {a2}")
 
         end = time.perf_counter()
 
