@@ -196,7 +196,7 @@ class square_matrix:
         wx1 = self.__fztow1[0](z)
         wy0 = self.__fztow0[2](z)
         wy1 = self.__fztow1[2](z)
-
+        
         wx0 = np.reshape(wx0, (nalpha, nbeta))
         wx1 = np.reshape(wx1, (nalpha, nbeta))
         wy0 = np.reshape(wy0, (nalpha, nbeta))
@@ -228,8 +228,8 @@ class square_matrix:
                         if np.abs(n) + np.abs(m-1) != 0:
                             sum2 += term
                         
-                F1[j,h] = sum1*1 # ? Is *1 needed?
-                F2[j,h] = sum2*1
+                F1[j,h] = sum1
+                F2[j,h] = sum2
 
         F1inv = np.linalg.inv(F1)
         F2inv = np.linalg.inv(F2)
@@ -249,6 +249,9 @@ class square_matrix:
 
             a1.append(a1num/a1den)
             a2.append(a2num/a2den)
+
+            print(f'a1{h}= {a1num}/{a1den}')
+            print(f'a2{h}= {a2num}/{a2den}')
 
         print(f"Here! A1: {a1}; A2: {a2}")
 
