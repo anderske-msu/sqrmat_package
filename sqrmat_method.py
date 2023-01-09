@@ -267,10 +267,14 @@ class square_matrix:
         vnorm = np.sqrt(np.sum(v*np.conj(v), axis=0))
         nvnorm = np.sqrt(np.sum(nv*np.conj(nv), axis=0))
 
-        vnorm = np.average(vnorm)
-        nvnorm = np.average(nvnorm)
+        # vnorm = np.average(vnorm)
+        # nvnorm = np.average(nvnorm)
+
+        vnorm = np.sum(vnorm)
+        nvnorm = np.sum(nvnorm)
 
         na *= (vnorm/nvnorm)
+        # na /= vnorm
 
         print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {vnorm/nvnorm}")
 
