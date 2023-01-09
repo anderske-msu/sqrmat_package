@@ -246,8 +246,8 @@ class square_matrix:
             a1.append(a1num/a1den)
             a2.append(a2num/a2den)
 
-            print(f'a1{h}= {a1num}/{a1den}')
-            print(f'a2{h}= {a2num}/{a2den}')
+            # print(f'a1{h}= {a1num}/{a1den}')
+            # print(f'a2{h}= {a2num}/{a2den}')
 
         na = np.array([a1, a2])
 
@@ -267,16 +267,17 @@ class square_matrix:
         vnorm = np.sqrt(np.sum(v*np.conj(v), axis=0))
         nvnorm = np.sqrt(np.sum(nv*np.conj(nv), axis=0))
 
-        # vnorm = np.average(vnorm)
-        # nvnorm = np.average(nvnorm)
+        vnorm = np.average(vnorm)
+        nvnorm = np.average(nvnorm)
 
-        vnorm = np.sum(vnorm)
-        nvnorm = np.sum(nvnorm)
+        # vnorm = np.sum(vnorm)
+        # nvnorm = np.sum(nvnorm)
 
         na *= (vnorm/nvnorm)
         # na /= vnorm
 
         print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {vnorm/nvnorm}")
+        # print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}")
 
         end = time.perf_counter()
 
