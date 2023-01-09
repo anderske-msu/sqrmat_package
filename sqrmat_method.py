@@ -182,28 +182,28 @@ class square_matrix:
 
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
 
-    def get_weights(self, z: ArrayLike, nalpha: int, nbeta: int) -> np.ndarray:
+    def get_weights(self, z: ArrayLike, nalpha: int, nbeta: int, a: np.ndarray) -> np.ndarray:
         # ! Not working
         start = time.perf_counter()
 
         num_eig = 4     # Number of left eigenvectors being used in the linear combination of the transformation
 
-        wx0 = self.__fztow0[0](z)
-        wx1 = self.__fztow1[0](z)
-        wy0 = self.__fztow0[2](z)
-        wy1 = self.__fztow1[2](z)
+        wx0 = np.array(self.__fztow0[0](z))
+        wx1 = np.array(self.__fztow1[0](z))
+        wy0 = np.array(self.__fztow0[2](z))
+        wy1 = np.array(self.__fztow1[2](z))
         
-        wx0 = np.reshape(wx0, (nalpha, nbeta))
-        wx1 = np.reshape(wx1, (nalpha, nbeta))
-        wy0 = np.reshape(wy0, (nalpha, nbeta))
-        wy1 = np.reshape(wy1, (nalpha, nbeta))
+        fwx0 = np.reshape(wx0, (nalpha, nbeta))
+        fwx1 = np.reshape(wx1, (nalpha, nbeta))
+        fwy0 = np.reshape(wy0, (nalpha, nbeta))
+        fwy1 = np.reshape(wy1, (nalpha, nbeta))
 
-        wx0 = np.fft.fft2(wx0)
-        wx1 = np.fft.fft2(wx1)
-        wy0 = np.fft.fft2(wy0)
-        wy1 = np.fft.fft2(wy1)
+        fwx0 = np.fft.fft2(fwx0)
+        fwx1 = np.fft.fft2(fwx1)
+        fwy0 = np.fft.fft2(fwy0)
+        fwy1 = np.fft.fft2(fwy1)
 
-        wf = np.array([wx0, wx1, wy0, wy1])
+        wf = np.array([fwx0, fwx1, fwy0, fwy1])
 
         # Build F1/2 Matricies        
         F1 = np.zeros((num_eig, num_eig), dtype=np.complex128)
@@ -249,15 +249,36 @@ class square_matrix:
             print(f'a1{h}= {a1num}/{a1den}')
             print(f'a2{h}= {a2num}/{a2den}')
 
-        print(f"Here! A1: {a1}; A2: {a2}")
+        na = np.array([a1, a2])
+
+        # Normalization
+
+        v = []
+        nv = []
+
+        for i in range(self.dim):
+
+            v.append(a[i,0]*wx0 + a[i,1]*wx1 + a[i,2]*wy0 + a[i,3]*wy1)
+            nv.append(na[i,0]*wx0 + na[i,1]*wx1 + na[i,2]*wy0 + na[i,3]*wy1)
+
+        v = np.array(v)
+        nv = np.array(nv)
+
+        vnorm = np.sqrt(np.sum(v*np.conj(v), axis=0))
+        nvnorm = np.sqrt(np.sum(nv*np.conj(nv), axis=0))
+
+        vnorm = np.average(vnorm)
+        nvnorm = np.average(nvnorm)
+
+        na *= (vnorm/nvnorm)
+
+        print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {vnorm/nvnorm}")
 
         end = time.perf_counter()
 
         print(f"Weights Found!: Time {end-start}s")
 
-        a = np.array([a1, a2])
-
-        return a
+        return na
         
     def jacobian(self, z: ArrayLike) -> np.ndarray:
         """Returns the value of the jacobian matrix at z.
