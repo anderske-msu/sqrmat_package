@@ -59,7 +59,8 @@ class square_matrix:
 
         # Check if contruct sqrmat was run
         if self.square_matrix is None:
-            raise Exception("The square matrix has not been constructed. Run \"construct_square_matrix\" first.")
+            err = "The square matrix has not been constructed. Run \"construct_square_matrix\" first."
+            raise Exception(err)
 
         for di in range(self.dim):
             self._hp.get_degenerate_list(di+1, resonance=res)
@@ -123,7 +124,8 @@ class square_matrix:
         """
         
         if self.__fztow[0] is None:
-            raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
+            err = "The transformation has not been found. Run \"get_transformation\" first."
+            raise Exception(err)
         
         if (weights is not None) and np.any(self.__weights != weights):
             
@@ -178,7 +180,8 @@ class square_matrix:
         """
 
         if self.__wftoz[0] is None:
-            raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
+            err = "The transformation has not been found. Run \"get_transformation\" first."
+            raise Exception(err)
 
         return np.array([self.__wftoz[0](w), self.__wftoz[1](w), self.__wftoz[2](w), self.__wftoz[3](w)])
 
@@ -227,6 +230,7 @@ class square_matrix:
                 F1[j,h] = sum1
                 F2[j,h] = sum2
 
+        print('det', np.linalg.det(F1), np.linalg.det(F2))
         F1inv = np.linalg.inv(F1)
         F2inv = np.linalg.inv(F2)
 
@@ -264,19 +268,18 @@ class square_matrix:
         v = np.array(v)
         nv = np.array(nv)
 
-        vnorm = np.sqrt(np.sum(v*np.conj(v), axis=0))
-        nvnorm = np.sqrt(np.sum(nv*np.conj(nv), axis=0))
+        vnorm = np.linalg.norm(v, axis=0)
+        nvnorm = np.linalg.norm(nv, axis=0)
 
         vnorm = np.average(vnorm)
         nvnorm = np.average(nvnorm)
 
-        # vnorm = np.sum(vnorm)
-        # nvnorm = np.sum(nvnorm)
+        scale_factor = vnorm/nvnorm
 
-        na *= (vnorm/nvnorm)
-        # na /= vnorm
+        na *= scale_factor
+        # na /= nvnorm
 
-        print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {vnorm/nvnorm}")
+        print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {scale_factor}")
         # print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}")
 
         end = time.perf_counter()
@@ -311,7 +314,8 @@ class square_matrix:
             z'; numpy.ndarray; [zx', zx'*, zy', zy'*]
         """
         if self.__fzmap[0] is None:
-            raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
+            err = "The transformation has not been found. Run \"get_transformation\" first."
+            raise Exception(err)
 
         return np.array([self.__fzmap[0](z), self.__fzmap[1](z), self.__fzmap[2](z), self.__fzmap[3](z)])
 
@@ -357,7 +361,8 @@ class square_matrix:
         """Tests U U^(-1) = I"""
         
         if self.__fzmap[0] is None:
-            raise Exception("The transformation has not been found. Run \"get_transformation\" first.")
+            err = "The transformation has not been found. Run \"get_transformation\" first."
+            raise Exception(err)
         
         zx, zy = sp.symbols(r'z_x, z_y')
         zxc = zx.conjugate()
