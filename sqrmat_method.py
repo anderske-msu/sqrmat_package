@@ -257,29 +257,37 @@ class square_matrix:
 
         # Normalization
 
-        v = []
-        nv = []
+        # Normalize Vectors
+        # v = []
+        # nv = []
 
-        for i in range(self.dim):
+        # for i in range(self.dim):
 
-            v.append(a[i,0]*wx0 + a[i,1]*wx1 + a[i,2]*wy0 + a[i,3]*wy1)
-            nv.append(na[i,0]*wx0 + na[i,1]*wx1 + na[i,2]*wy0 + na[i,3]*wy1)
+        #     v.append(a[i,0]*wx0 + a[i,1]*wx1 + a[i,2]*wy0 + a[i,3]*wy1)
+        #     nv.append(na[i,0]*wx0 + na[i,1]*wx1 + na[i,2]*wy0 + na[i,3]*wy1)
 
-        v = np.array(v)
-        nv = np.array(nv)
+        # v = np.array(v)
+        # nv = np.array(nv)
 
-        vnorm = np.linalg.norm(v, axis=0)
-        nvnorm = np.linalg.norm(nv, axis=0)
+        # vnorm = np.linalg.norm(v, axis=0)
+        # nvnorm = np.linalg.norm(nv, axis=0)
 
-        vnorm = np.average(vnorm)
-        nvnorm = np.average(nvnorm)
+        # vnorm = np.average(vnorm)
+        # nvnorm = np.average(nvnorm)
 
-        scale_factor = vnorm/nvnorm
+        # scale_factor = vnorm/nvnorm
 
-        na *= scale_factor
-        # na /= nvnorm
+        # na *= scale_factor
+        # # na /= nvnorm
 
-        print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {scale_factor}")
+        # Normalize Weights
+        sum_weights = np.sum(na, axis=1)
+        
+        for i, sw in enumerate(sum_weights):
+            na[i,:] /= sw
+
+
+        print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}, norm: {sum_weights}")
         # print(f"Here! A1: {na[0,:]}; A2: {na[1,:]}")
 
         end = time.perf_counter()
