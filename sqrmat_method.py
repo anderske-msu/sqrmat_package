@@ -1,6 +1,6 @@
 import numpy as np
 from numpy.typing import ArrayLike  # For hinting (numpy >= 1.2)
-# ArrayLike = list (numpy < 1.2)
+# ArrayLike = list # (numpy < 1.2)
 
 import sympy as sp                  # For test_u
 import time                         # For timing functions
