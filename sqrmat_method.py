@@ -72,12 +72,12 @@ class square_matrix:
             self._hp.jordan_form()
 
             # ? Are these Better as lists or np.ndarrays?
-            self.degenerate_list[di] = np.array(self._hp.degenerate_list.tolist())
-            self.jordan_norm_form_matrix[di] = np.array(self._hp.jnf_mat.tolist())
-            self.left_vector[di] = self._hp.left_vector[left_eigenvector].tolist()
+            self.degenerate_list[di] = self._hp.degenerate_list.copy()
+            self.jordan_norm_form_matrix[di] = self._hp.jnf_mat.copy()
+            self.left_vector[di] = self._hp.left_vector[left_eigenvector].copy()
             self.left_vector_second[di] = self._hp.left_vector[
                 left_eigenvector + 1
-            ].tolist()  # TODO make left_eig a list to choose (not plus 1)
+            ].copy()  # TODO make left_eig a list to choose (not plus 1)
             self.jordan_chain_structure[di] = jordan_chain_structure(
                 self.jordan_norm_form_matrix[di], epsilon=epsilon
             )
@@ -147,9 +147,7 @@ class square_matrix:
             print("Transformation weights are being updated.")
 
             # Checks if the weights have changed
-            self.__weights = np.array(
-                weights
-            )  # TODO figure out a better way to make sure it's not passed by reference
+            self.__weights = np.copy(weights)
 
             # Finding new transformation and inverse functions
 
