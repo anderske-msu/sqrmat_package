@@ -7,8 +7,8 @@ import sympy as sp  # For test_u
 import time  # For timing functions
 
 import PyTPSA
-from Library.CodeLib.sqrmat import jordan_chain_structure, tpsvar
-from Library.CodeLib.commonfuncs import numpify
+from python_library_kjanderson248.sqrmat import jordan_chain_structure, tpsvar
+from python_library_kjanderson248.commonfuncs import numpify
 
 
 class square_matrix:
