@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "square-marix-method"
+name = "square-matrix-method"
 version = "0.0.1"
 authors = [{ name = "Kelly Anderson", email = "kjanderson24@proton.me" }]
 description = "A package to use for the square matrix method"
