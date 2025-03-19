@@ -1,23 +1,21 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
 
 [project]
-name = "square_marix_method"
+name = "square-marix-method"
 version = "0.0.1"
-authors = [
-  { name="Kelly Anderson", email="anderske@frib.msu.edu" },
-]
+authors = [{ name = "Kelly Anderson", email = "kjanderson24@proton.me" }]
 description = "A package to use for the square matrix method"
-readme = "README.md"
-license = { file="LICENSE" }
+readme = { file = "README.md", content-type = "text/markdown" }
+license = { file = "LICENSE" }
 requires-python = ">=3.6.4"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/anderske-msu/Library"
-"Bug Tracker" = "https://github.com/anderske-msu/Library/issues"
+"Bug Tracker" = "https://github.com/anderske-msu/sqrmat_package/issues"
+Homepage = "https://github.com/anderske-msu/sqrmat_package"
