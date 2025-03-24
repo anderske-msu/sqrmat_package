@@ -1,5 +1,5 @@
 import numpy as np
-from numpy.typing import ArrayLike  # For hinting (numpy >= 1.2)
+from numpy.typing import ArrayLike
 import sympy as sp  # For test_u
 import time  # For timing functions
 import PyTPSA

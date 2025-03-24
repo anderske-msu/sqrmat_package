@@ -1,16 +1,16 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "square-matrix-method"
-version = "0.0.1"
+version = "0.0.2"
 authors = [{ name = "Kelly Anderson", email = "kjanderson24@proton.me" }]
-description = "A package to use for the square matrix method"
+description = "A package for the use of the square matrix method"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-dependencies = ["numpy", "sympy"]                                         # "PyTPSA"
+dependencies = ["numpy>=1.2", "sympy"]                                    # "PyTPSA"
 
 [project.urls]
 "Bug Tracker" = "https://github.com/anderske-msu/sqrmat_package/issues"
