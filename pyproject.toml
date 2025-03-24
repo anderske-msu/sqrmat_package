@@ -10,7 +10,7 @@ description = "A package to use for the square matrix method"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-dependencies = ["numpy", "sympy", "python-library-kjanderson248"]         # "PyTPSA"
+dependencies = ["numpy", "sympy"]                                         # "PyTPSA"
 
 [project.urls]
 "Bug Tracker" = "https://github.com/anderske-msu/sqrmat_package/issues"

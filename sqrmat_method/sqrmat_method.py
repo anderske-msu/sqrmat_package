@@ -1,14 +1,31 @@
 import numpy as np
 from numpy.typing import ArrayLike  # For hinting (numpy >= 1.2)
-
-# ArrayLike = list # (numpy < 1.2)
-
 import sympy as sp  # For test_u
 import time  # For timing functions
-
 import PyTPSA
-from python_library_kjanderson248.sqrmat import jordan_chain_structure, tpsvar
-from python_library_kjanderson248.commonfuncs import numpify
+from .sqrmat import jordan_chain_structure, tpsvar
+
+
+def numpify(tps):
+    """
+    Yue's function for turning TPS function into numpy function
+    """
+    mask = np.abs(tps.indices) > 1e-16
+    coeffs = np.array(tps.indices)[mask].tolist()
+    inds = np.arange(len(tps.indices))[mask]
+    powers = [tps.find_power(i)[1:] for i in inds]
+    dim = int(tps.get_dim())
+
+    def pyfunc(list_of_num):
+        result = 0 + 0j
+        for i in range(len(coeffs)):
+            temp = coeffs[i]
+            for j in range(dim):
+                temp *= list_of_num[j] ** powers[i][j]
+            result += temp
+        return result
+
+    return pyfunc
 
 
 class square_matrix:
