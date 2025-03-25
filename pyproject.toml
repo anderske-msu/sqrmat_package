@@ -5,12 +5,15 @@ build-backend = "hatchling.build"
 [project]
 name = "sqrmat-method"
 version = "0.0.2"
-authors = [{ name = "Kelly Anderson", email = "kjanderson24@proton.me" }]
+authors = [
+    { name = "Kelly Anderson", email = "kjanderson24@proton.me" },
+    { name = "Yue Hao" },
+]
 description = "A package for the use of the square matrix method"
 readme = { file = "README.md", content-type = "text/markdown" }
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
-dependencies = ["numpy>=1.2", "sympy"]                                    # "PyTPSA"
+dependencies = ["numpy>=1.2", "sympy"] # "PyTPSA"
 
 [project.urls]
 "Bug Tracker" = "https://github.com/anderske-msu/sqrmat_package/issues"
