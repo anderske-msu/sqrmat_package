@@ -2,4 +2,5 @@
 
 An implementation of the square matrix method [1].
 
-[1] L.H. Yu, “Analysis of Nonlinear Dynamics by Square Matrix Method,” (2018).
+# References
+[1] Yu, L. H. (2017). Analysis of nonlinear dynamics by square matrix method. Phys. Rev. Accel. Beams, 20, 034001. doi:10.1103/PhysRevAccelBeams.20.034001
