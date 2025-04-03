@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "sqrmat-method"
-version = "0.0.2"
+version = "0.0.3"
 authors = [{ name = "Kelly Anderson", email = "kjanderson24@proton.me" }]
 description = "A package for the use of the square matrix method"
 readme = { file = "README.md", content-type = "text/markdown" }
